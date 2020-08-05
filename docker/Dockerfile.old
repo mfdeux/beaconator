@@ -1,0 +1,49 @@
+# Using official python runtime base image
+FROM python:3.8-buster
+
+# Set the application directory
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+  nano \
+  supervisor \
+  netcat \
+  binutils \
+  libproj-dev \
+  gdal-bin \
+  libgeoip1 \
+  python-pip \
+  python3-pandas \
+  python3-numpy \
+  python3-scipy \
+  python3-psycopg2 \
+  python3-pip \
+  python3-venv \
+  wkhtmltopdf \
+  git \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip install superlance
+
+# Copy requirements.txt from build folder to /app inside the container
+ADD ./build/_common/requirements.txt /app
+
+RUN mkdir /venv
+RUN python3 -m venv /venv
+
+# Install pre-req build tools
+RUN /venv/bin/pip install -U setuptools wheel
+
+# Update pip
+RUN /venv/bin/pip install --upgrade pip
+
+# Install our requirements.txt
+RUN /venv/bin/pip install --ignore-requires-python -r /app/requirements.txt
+
+# Copy our code from the current folder to /app inside the container
+VOLUME ["/app"]
+
+ADD ./build/rest_api_python/entrypoint.sh /
+ADD ./build/rest_api_python/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

@@ -1,0 +1,31 @@
+version: "3"
+services:
+  rest_api:
+    build:
+      context: ./
+      dockerfile: build/rest_api_python/Dockerfile
+    image: registry.gitlab.com/mfdeux/activewatch-backend/rest_api:latest
+    volumes:
+      - ./src_python/sentry:/app
+    ports:
+      - 127.0.0.1:8000:6000
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHON_ENV=production
+      - BIND_HOST=0.0.0.0
+      - BIND_PORT=6000
+      - WORKER_COUNT=5
+      - DATABASE_URL=postgis://django:nH5XBYAZRdSCxpnlYdazdE4trFuj7UlMqzgIpPRb@host.docker.internal:5432/activewatch
+      - DATABASE_HOST=host.docker.internal
+      - DATABASE_PORT=5432
+      - CACHE_HOST=host.docker.internal
+      - CACHE_PORT=6381
+      - STATSD_HOST=host.docker.internal
+      - STATSD_PORT=8125
+      - PROJ_NAME=activewatch
+    networks:
+      - activewatch
+
+networks:
+  activewatch:
+    external: True

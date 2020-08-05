@@ -5,7 +5,7 @@ import yaml
 
 def load_config(path: str) -> typing.Dict:
     with open(path) as fh:
-        loaded_config = yaml.load(fh)
+        loaded_config = yaml.safe_load(fh)
 
     return loaded_config
 

@@ -1,7 +1,7 @@
 import datetime
 
 
-def http_dt(dt):
+def http_dt(dt: datetime.datetime) -> str:
     """Return a string representation of a date according to RFC 1123
     (HTTP/1.1).
 
@@ -34,5 +34,5 @@ def http_dt(dt):
     )
 
 
-def current_http_datetime():
+def current_http_datetime() -> str:
     return http_dt(datetime.datetime.now(datetime.timezone.utc))

@@ -1,0 +1,4 @@
+[flake8]
+select = BLK,C,E,F,W,B,B901,S,ANN
+ignore = E203,W503,B008,ANN102
+max-line-length = 88

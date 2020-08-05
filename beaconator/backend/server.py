@@ -1,5 +1,6 @@
 import os
 import typing
+import uuid
 
 from fastapi import (
     APIRouter,
@@ -35,7 +36,7 @@ DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../..", "da
 STATIC_DIR = os.path.join(DATA_DIR, "static")
 
 
-def get_auth_token(*, authorization: str = Header(None)):
+def get_auth_token(*, authorization: str = Header(None)) -> None:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -52,7 +53,7 @@ def get_auth_token(*, authorization: str = Header(None)):
         raise credentials_exception
 
 
-def get_db():
+def get_db() -> Session:
     db = SessionLocal()
     try:
         yield db
@@ -60,11 +61,8 @@ def get_db():
         db.close()
 
 
-def static_file(filename: str):
+def static_file(filename: str) -> str:
     return os.path.join(STATIC_DIR, filename)
-
-
-import uuid
 
 
 def make_analytics_payload(
@@ -77,7 +75,6 @@ def make_analytics_payload(
     referer: str = None,
     query: typing.Dict = None,
 ) -> typing.Dict:
-
     payload = {
         "v": "1",  # Protocol Version
         "t": "pageview",  # Type
@@ -107,7 +104,7 @@ async def send_analytics_payload(
     title: str = None,
     ip_address: str = None,
     referer: str = None,
-):
+) -> None:
     payload = make_analytics_payload(
         tracking_id=ga_code,
         property_code=property_code,
@@ -120,12 +117,12 @@ async def send_analytics_payload(
     await SingletonAiohttp.post_payload(beacon_url, payload)
 
 
-async def on_start_up():
+async def on_start_up() -> None:
     models.Base.metadata.create_all(bind=engine)
     SingletonAiohttp.get_aiohttp_client()
 
 
-async def on_shutdown():
+async def on_shutdown() -> None:
     await SingletonAiohttp.close_aiohttp_client()
 
 
@@ -154,7 +151,7 @@ if SERVE_ADMIN:
     app.mount(
         "/admin",
         StaticFiles(
-            directory="/Users/mfdeux/dev/projects/github.com/mfdeux/beaconator/beaconator/frontend/dist"
+            directory="/Users/mfdeux/dev/projects/github.com/mfdeux/beaconator/beaconator/frontend/dist"  # noqa: E501
         ),
         name="admin",
     )
@@ -166,7 +163,7 @@ async def get_image(
     request: Request,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-):
+) -> FileResponse:
     property = dao.get_property_by_code(db, code=property_code)
     if property is None:
         raise HTTPException(status_code=404, detail="Requested image does not exist")
@@ -208,7 +205,7 @@ async def get_image(
 
 
 @app.post("/api/login", response_model=schemas.AuthToken, tags=["api"])
-async def post_login(item: schemas.Login):
+async def post_login(item: schemas.Login) -> typing.Dict:
     """
     Login to the API and return JWT token
     """
@@ -219,18 +216,22 @@ async def post_login(item: schemas.Login):
 
 
 @api.get("/codes", response_model=typing.List[schemas.GACode])
-async def get_ga_codes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def get_ga_codes(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):  # noqa: ANN201
     ga_codes = dao.get_ga_codes(db, skip=skip, limit=limit)
     return ga_codes
 
 
 @api.post("/codes", response_model=schemas.GACode)
-async def post_ga_code(item: schemas.GACodeChange, db: Session = Depends(get_db)):
+async def post_ga_code(
+    item: schemas.GACodeChange, db: Session = Depends(get_db)
+):  # noqa: ANN201
     return dao.create_ga_code(db=db, item=item)
 
 
 @api.get("/codes/{code_id}", response_model=schemas.GACode)
-async def get_ga_code(code_id: int, db: Session = Depends(get_db)):
+async def get_ga_code(code_id: int, db: Session = Depends(get_db)):  # noqa: ANN201
     code = dao.get_ga_code(db, id=code_id)
     if code is None:
         raise HTTPException(status_code=404, detail="Code not found")
@@ -240,7 +241,7 @@ async def get_ga_code(code_id: int, db: Session = Depends(get_db)):
 @api.patch("/codes/{code_id}", response_model=schemas.GACode)
 async def patch_ga_code(
     code_id: int, item: schemas.GACodeChange, db: Session = Depends(get_db)
-):
+):  # noqa: ANN201
     returned = dao.update_ga_code(db, id=code_id, item=item)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Code not found")
@@ -248,7 +249,7 @@ async def patch_ga_code(
 
 
 @api.delete("/codes/{code_id}", response_model=dict)
-async def delete_ga_code(code_id: int, db: Session = Depends(get_db)):
+async def delete_ga_code(code_id: int, db: Session = Depends(get_db)):  # noqa: ANN201
     returned = dao.delete_ga_code(db, id=code_id)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Code not found")
@@ -258,18 +259,22 @@ async def delete_ga_code(code_id: int, db: Session = Depends(get_db)):
 @api.get("/properties", response_model=typing.List[schemas.Property])
 async def get_ga_properties(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
-):
+):  # noqa: ANN201
     properties = dao.get_properties(db, skip=skip, limit=limit)
     return properties
 
 
 @api.post("/properties", response_model=schemas.Property)
-async def post_ga_property(item: schemas.PropertyChange, db: Session = Depends(get_db)):
+async def post_ga_property(
+    item: schemas.PropertyChange, db: Session = Depends(get_db)
+):  # noqa: ANN201
     return dao.create_property(db=db, item=item)
 
 
 @api.get("/properties/{property_id}", response_model=schemas.Property)
-async def get_ga_property(property_id: int, db: Session = Depends(get_db)):
+async def get_ga_property(
+    property_id: int, db: Session = Depends(get_db)
+):  # noqa: ANN201
     property = dao.get_property(db, id=property_id)
     if property is None:
         raise HTTPException(status_code=404, detail="Property not found")
@@ -279,7 +284,7 @@ async def get_ga_property(property_id: int, db: Session = Depends(get_db)):
 @api.patch("/properties/{property_id}", response_model=schemas.Property)
 async def patch_ga_property(
     property_id: int, item: schemas.PropertyChange, db: Session = Depends(get_db)
-):
+):  # noqa: ANN201
     returned = dao.update_property(db, id=property_id, item=item)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Property not found")
@@ -287,7 +292,9 @@ async def patch_ga_property(
 
 
 @api.delete("/properties/{property_id}", response_model=dict)
-async def delete_ga_property(property_id: int, db: Session = Depends(get_db)):
+async def delete_ga_property(
+    property_id: int, db: Session = Depends(get_db)
+):  # noqa: ANN201
     returned = dao.delete_property(db, id=property_id)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Property not found")
@@ -295,7 +302,7 @@ async def delete_ga_property(property_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/api/other/images", tags=["api"])
-async def get_image(type: typing.Optional[str] = "other"):
+async def get_images(type: typing.Optional[str] = "other") -> FileResponse:
     try:
         image_resp = image_queries[type]
     except KeyError:

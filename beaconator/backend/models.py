@@ -1,4 +1,5 @@
 import datetime
+import typing
 import uuid
 from sqlite3 import Connection as SQLite3Connection
 
@@ -9,13 +10,15 @@ from sqlalchemy.orm import backref, relationship
 from .database import Base
 
 
-def make_uuid():
+def make_uuid() -> str:
     return str(uuid.uuid4())
 
 
 # https://stackoverflow.com/questions/57726047/sqlalchemy-expression-language-and-sqlites-on-delete-cascade
 @event.listens_for(Engine, "connect")
-def _set_sqlite_pragma(dbapi_connection, connection_record):
+def _set_sqlite_pragma(
+    dbapi_connection: typing.Any, connection_record: typing.Any
+) -> None:
     if isinstance(dbapi_connection, SQLite3Connection):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")

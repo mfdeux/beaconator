@@ -28,20 +28,18 @@ class SingletonAiohttp:
         return cls.aiohttp_client
 
     @classmethod
-    async def close_aiohttp_client(cls):
+    async def close_aiohttp_client(cls) -> None:
         if cls.aiohttp_client:
             await cls.aiohttp_client.close()
             cls.aiohttp_client = None
 
     @classmethod
-    async def query_url(cls, url: str):
+    async def query_url(cls, url: str) -> typing.Dict:
         client = cls.get_aiohttp_client()
 
         try:
             async with client.post(url) as response:
-                if response.status != 200:
-                    return {"ERROR OCCURED" + str(await response.text())}
-
+                response.raise_for_status()
                 json_result = await response.json()
         except Exception as e:
             return {"ERROR": e}
@@ -49,14 +47,12 @@ class SingletonAiohttp:
         return json_result
 
     @classmethod
-    async def post_payload(cls, url: str, payload: typing.Dict):
+    async def post_payload(cls, url: str, payload: typing.Dict) -> typing.Dict:
         client = cls.get_aiohttp_client()
 
         try:
             async with client.post(url, data=payload) as response:
-                if response.status < 300:
-                    return {"ERROR OCCURED" + str(await response.text())}
-
+                response.raise_for_status()
                 json_result = await response.json()
         except Exception as e:
             return {"ERROR": e}

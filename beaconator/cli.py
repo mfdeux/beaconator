@@ -1,5 +1,3 @@
-import typing
-
 import click
 import uvicorn
 

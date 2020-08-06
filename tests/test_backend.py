@@ -5,8 +5,7 @@ import typing
 import pytest
 from starlette.testclient import TestClient
 
-from beaconator.backend import dao, schemas
-from beaconator.backend.server import app
+from beaconator.backend import dao
 from beaconator.backend.utils.images import image_queries
 
 

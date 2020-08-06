@@ -9,10 +9,6 @@ class InvalidToken(Exception):
     pass
 
 
-TEMP_PASSWORD = "tDkZMLvsao93Cm5I9FZbwqPH"
-JWT_SECRET = "cQ0MFXdo2CrvBtReB10cey0NMaB4oize76RFZ43FqxpKnXtMEZrY3U0qUV1X"
-
-
 def generate_jwt_token(secret: str) -> str:
     encoded_jwt = jwt.encode({"usage": "authentication"}, secret, algorithm="HS256")
     return encoded_jwt.decode("utf-8")

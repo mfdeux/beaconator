@@ -18,22 +18,19 @@ from fastapi.security.utils import get_authorization_scheme_param
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
+from ..config import Config
 from . import dao, models, schemas
-from .database import SessionLocal, engine
+from .database import get_engine, get_session
 from .utils.http import SingletonAiohttp
 from .utils.images import image_queries
 from .utils.other import current_http_datetime
-from .utils.secrets import (
-    JWT_SECRET,
-    TEMP_PASSWORD,
-    InvalidToken,
-    generate_jwt_token,
-    validate_jwt_token,
-)
+from .utils.secrets import InvalidToken, generate_jwt_token, validate_jwt_token
 
 beacon_url = "https://ssl.google-analytics.com/collect"
 DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../..", "data")
-ADMIN_DIST_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "frontend", "dist")
+ADMIN_DIST_DIR = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)), "..", "frontend", "dist"
+)
 STATIC_DIR = os.path.join(DATA_DIR, "static")
 
 
@@ -49,12 +46,14 @@ def get_auth_token(*, authorization: str = Header(None)) -> None:
         raise credentials_exception
 
     try:
-        validate_jwt_token(token, JWT_SECRET)
+        validate_jwt_token(token, os.environ.get("BEACONATOR__JWT_SECRET"))
     except InvalidToken:
         raise credentials_exception
 
 
 def get_db() -> Session:
+    engine = get_engine(os.environ.get("BEACONATOR__DB_URI"))
+    SessionLocal = get_session(engine)
     db = SessionLocal()
     try:
         yield db
@@ -118,62 +117,16 @@ async def send_analytics_payload(
     await SingletonAiohttp.post_payload(beacon_url, payload)
 
 
-async def on_start_up() -> None:
-    models.Base.metadata.create_all(bind=engine)
-    SingletonAiohttp.get_aiohttp_client()
-
-
-async def on_shutdown() -> None:
-    await SingletonAiohttp.close_aiohttp_client()
-
-
-app = FastAPI(
-    docs_url=None, redoc_url=None, on_startup=[on_start_up], on_shutdown=[on_shutdown]
-)
-
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "http://localhost:8080"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+base = APIRouter()
 api = APIRouter()
 
-SERVE_ADMIN = True
 
-# if SERVE_ADMIN:
-#     app.mount(
-#         "/admin",
-#         StaticFiles(
-#             directory=ADMIN_DIST_DIR
-#         ),
-#         name="admin",
-#     )
-
-print(ADMIN_DIST_DIR)
-
-app.mount(
-        "/admin",
-        StaticFiles(
-            directory=ADMIN_DIST_DIR
-        ),
-        name="admin",
-    )
-
-@app.get("/")
+@base.get("/")
 async def get_index():  # noqa: ANN201
     return
 
 
-@app.get("/images/{property_code}")
+@base.get("/images/{property_code}")
 async def get_image(
     property_code: str,
     request: Request,
@@ -220,13 +173,13 @@ async def get_image(
     return response
 
 
-@app.post("/api/login", response_model=schemas.AuthToken, tags=["api"])
+@base.post("/api/login", response_model=schemas.AuthToken, tags=["api"])
 async def post_login(item: schemas.Login) -> typing.Dict:
     """
     Login to the API and return JWT token
     """
-    if item.password == TEMP_PASSWORD:
-        return {"token": generate_jwt_token(JWT_SECRET)}
+    if item.password == os.environ.get("BEACONATOR__PASSWORD"):
+        return {"token": generate_jwt_token(os.environ.get("BEACONATOR__JWT_SECRET"))}
     else:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
@@ -313,7 +266,7 @@ async def delete_property(
         raise HTTPException(status_code=404, detail="Property not found")
 
 
-@app.get("/api/other/images", tags=["api"])
+@base.get("/api/other/images", tags=["api"])
 async def get_images(type: typing.Optional[str] = "other") -> FileResponse:
     try:
         image_resp = image_queries[type]
@@ -325,6 +278,36 @@ async def get_images(type: typing.Optional[str] = "other") -> FileResponse:
     )
 
 
-app.include_router(
-    api, prefix="/api", tags=["api"], dependencies=[Depends(get_auth_token)]
-)
+def create_server(config: Config) -> FastAPI:
+    async def on_start_up() -> None:
+        models.Base.metadata.create_all(bind=get_engine(config.database_uri))
+        SingletonAiohttp.get_aiohttp_client()
+
+    async def on_shutdown() -> None:
+        await SingletonAiohttp.close_aiohttp_client()
+
+    app = FastAPI(
+        docs_url=config.docs_url,
+        redoc_url=config.redoc_url,
+        on_startup=[on_start_up],
+        on_shutdown=[on_shutdown],
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.include_router(
+        api, prefix="/api", tags=["api"], dependencies=[Depends(get_auth_token)]
+    )
+    app.include_router(
+        base, prefix="", tags=["base"],
+    )
+    if config.serve_admin:
+        app.mount(
+            config.admin_path, StaticFiles(directory=ADMIN_DIST_DIR), name="admin",
+        )
+
+    return app

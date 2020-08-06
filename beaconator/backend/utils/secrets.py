@@ -15,10 +15,10 @@ JWT_SECRET = "cQ0MFXdo2CrvBtReB10cey0NMaB4oize76RFZ43FqxpKnXtMEZrY3U0qUV1X"
 
 def generate_jwt_token(secret: str) -> str:
     encoded_jwt = jwt.encode({"usage": "authentication"}, secret, algorithm="HS256")
-    return encoded_jwt
+    return encoded_jwt.decode("utf-8")
 
 
-def validate_jwt_token(token: str, secret: str) -> typing.Dict:
+def validate_jwt_token(token: str, secret: str) -> typing.Optional[typing.Dict]:
     try:
         jwt.decode(token, secret, algorithms=["HS256"])
     except jwt.exceptions.DecodeError:

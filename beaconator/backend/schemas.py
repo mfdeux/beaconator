@@ -5,20 +5,31 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GACodeBase(BaseModel):
-    name: Optional[str] = None
+class GACodeCreate(BaseModel):
+    name: str
     code: str
-    active: bool
+    active: bool = True
+
+    class Config:
+        extra = "forbid"
 
 
-class GACodeChange(GACodeBase):
-    pass
+class GACodeUpdate(BaseModel):
+    name: Optional[str]
+    code: Optional[str]
+    active: Optional[str]
+
+    class Config:
+        extra = "forbid"
 
 
-class GACode(GACodeBase):
+class GACode(BaseModel):
     id: int
+    name: str
+    code: str
     created_at: datetime.datetime
     updated_at: datetime.datetime
+    active: bool
 
     class Config:
         orm_mode = True
@@ -32,24 +43,39 @@ class PropertyImageKind(str, Enum):
     other = "other"
 
 
-class PropertyBase(BaseModel):
+class PropertyCreate(BaseModel):
     name: str
     image: PropertyImageKind
-    ga_code_id: str
+    ga_code_id: int
     extra_params: Optional[str] = None
-    active: bool
+    active: bool = True
+
+    class Config:
+        extra = "forbid"
 
 
-class PropertyChange(PropertyBase):
-    pass
+class PropertyUpdate(BaseModel):
+    name: Optional[str]
+    image: Optional[PropertyImageKind]
+    ga_code_id: Optional[int]
+    extra_params: Optional[str]
+    active: Optional[bool]
+
+    class Config:
+        extra = "forbid"
 
 
-class Property(PropertyBase):
+class Property(BaseModel):
     id: int
+    name: str
+    image: PropertyImageKind
     created_at: datetime.datetime
     updated_at: datetime.datetime
     code: str
     ga_code: GACode
+    ga_code_id: int
+    active: bool
+    extra_params: Optional[str]
 
     class Config:
         orm_mode = True

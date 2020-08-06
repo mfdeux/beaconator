@@ -157,6 +157,11 @@ if SERVE_ADMIN:
     )
 
 
+@app.get("/")
+async def get_index():  # noqa: ANN201
+    return
+
+
 @app.get("/images/{property_code}")
 async def get_image(
     property_code: str,
@@ -223,9 +228,9 @@ async def get_ga_codes(
     return ga_codes
 
 
-@api.post("/codes", response_model=schemas.GACode)
+@api.post("/codes", response_model=schemas.GACode, status_code=201)
 async def post_ga_code(
-    item: schemas.GACodeChange, db: Session = Depends(get_db)
+    item: schemas.GACodeCreate, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     return dao.create_ga_code(db=db, item=item)
 
@@ -240,7 +245,7 @@ async def get_ga_code(code_id: int, db: Session = Depends(get_db)):  # noqa: ANN
 
 @api.patch("/codes/{code_id}", response_model=schemas.GACode)
 async def patch_ga_code(
-    code_id: int, item: schemas.GACodeChange, db: Session = Depends(get_db)
+    code_id: int, item: schemas.GACodeUpdate, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     returned = dao.update_ga_code(db, id=code_id, item=item)
     if returned < 1:
@@ -248,33 +253,30 @@ async def patch_ga_code(
     return dao.get_ga_code(db, id=code_id)
 
 
-@api.delete("/codes/{code_id}", response_model=dict)
+@api.delete("/codes/{code_id}", status_code=204)
 async def delete_ga_code(code_id: int, db: Session = Depends(get_db)):  # noqa: ANN201
     returned = dao.delete_ga_code(db, id=code_id)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Code not found")
-    return {"deleted": returned}
 
 
 @api.get("/properties", response_model=typing.List[schemas.Property])
-async def get_ga_properties(
+async def get_properties(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     properties = dao.get_properties(db, skip=skip, limit=limit)
     return properties
 
 
-@api.post("/properties", response_model=schemas.Property)
-async def post_ga_property(
-    item: schemas.PropertyChange, db: Session = Depends(get_db)
+@api.post("/properties", response_model=schemas.Property, status_code=201)
+async def post_property(
+    item: schemas.PropertyCreate, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     return dao.create_property(db=db, item=item)
 
 
 @api.get("/properties/{property_id}", response_model=schemas.Property)
-async def get_ga_property(
-    property_id: int, db: Session = Depends(get_db)
-):  # noqa: ANN201
+async def get_property(property_id: int, db: Session = Depends(get_db)):  # noqa: ANN201
     property = dao.get_property(db, id=property_id)
     if property is None:
         raise HTTPException(status_code=404, detail="Property not found")
@@ -282,8 +284,8 @@ async def get_ga_property(
 
 
 @api.patch("/properties/{property_id}", response_model=schemas.Property)
-async def patch_ga_property(
-    property_id: int, item: schemas.PropertyChange, db: Session = Depends(get_db)
+async def patch_property(
+    property_id: int, item: schemas.PropertyUpdate, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     returned = dao.update_property(db, id=property_id, item=item)
     if returned < 1:
@@ -291,14 +293,13 @@ async def patch_ga_property(
     return dao.get_property(db, id=property_id)
 
 
-@api.delete("/properties/{property_id}", response_model=dict)
-async def delete_ga_property(
+@api.delete("/properties/{property_id}", status_code=204)
+async def delete_property(
     property_id: int, db: Session = Depends(get_db)
 ):  # noqa: ANN201
     returned = dao.delete_property(db, id=property_id)
     if returned < 1:
         raise HTTPException(status_code=404, detail="Property not found")
-    return {"deleted": returned}
 
 
 @app.get("/api/other/images", tags=["api"])

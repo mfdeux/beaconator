@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "beaconator"
-version = "0.1.0"
+version = "0.0.2"
 description = ""
 authors = ["Marc Ford <mrfxyz567@gmail.com>"]
 license = "MIT"
@@ -21,6 +21,7 @@ aiohttp = "^3.6.2"
 pyjwt = "^1.7.1"
 pyyaml = "^5.3.1"
 gunicorn = "^20.0.4"
+importlib_metadata = {version = "^1.7.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
@@ -54,8 +55,6 @@ exclude = '''
 '''
 
 [tool.isort]
-# https://github.com/timothycrosley/isort
-# https://github.com/timothycrosley/isort/wiki/isort-Settings
 line_length = 88
 indent = '    '
 multi_line_output = 3

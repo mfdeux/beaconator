@@ -21,7 +21,7 @@ def delete_ga_code(db: Session, id: int) -> int:
     return returned
 
 
-def create_ga_code(db: Session, item: schemas.GACodeChange) -> models.GACode:
+def create_ga_code(db: Session, item: schemas.GACodeCreate) -> models.GACode:
     db_item = models.GACode(**item.dict())
     db.add(db_item)
     db.commit()
@@ -29,7 +29,7 @@ def create_ga_code(db: Session, item: schemas.GACodeChange) -> models.GACode:
     return db_item
 
 
-def update_ga_code(db: Session, id: int, item: schemas.GACodeChange) -> int:
+def update_ga_code(db: Session, id: int, item: schemas.GACodeUpdate) -> int:
     returned = (
         db.query(models.GACode).filter(models.GACode.id == id).update(item.dict())
     )
@@ -51,7 +51,7 @@ def get_property_by_code(db: Session, code: str) -> models.Property:
     return db.query(models.Property).filter(models.Property.code == code).first()
 
 
-def create_property(db: Session, item: schemas.PropertyChange) -> models.Property:
+def create_property(db: Session, item: schemas.PropertyCreate) -> models.Property:
     db_item = models.Property(**item.dict())
     db.add(db_item)
     db.commit()
@@ -59,7 +59,7 @@ def create_property(db: Session, item: schemas.PropertyChange) -> models.Propert
     return db_item
 
 
-def update_property(db: Session, id: int, item: schemas.PropertyChange) -> int:
+def update_property(db: Session, id: int, item: schemas.PropertyUpdate) -> int:
     returned = (
         db.query(models.Property).filter(models.Property.id == id).update(item.dict())
     )

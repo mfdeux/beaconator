@@ -33,6 +33,7 @@ from .utils.secrets import (
 
 beacon_url = "https://ssl.google-analytics.com/collect"
 DATA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../..", "data")
+ADMIN_DIST_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "frontend", "dist")
 STATIC_DIR = os.path.join(DATA_DIR, "static")
 
 
@@ -151,7 +152,7 @@ if SERVE_ADMIN:
     app.mount(
         "/admin",
         StaticFiles(
-            directory="/Users/mfdeux/dev/projects/github.com/mfdeux/beaconator/beaconator/frontend/dist"  # noqa: E501
+            directory=ADMIN_DIST_DIR
         ),
         name="admin",
     )

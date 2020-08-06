@@ -73,77 +73,9 @@ import EmoticonWinkOutlineIcon from 'vue-material-design-icons/EmoticonWinkOutli
 
 import ClipboardTextOutlineIcon from 'vue-material-design-icons/ClipboardTextOutline';
 
-Vue.component('account-icon', AccountIcon);
-Vue.component('account-circle-outline-icon', AccountCircleOutlineIcon);
-Vue.component('account-outline-icon', AccountOutlineIcon);
-Vue.component('account-multiple-icon', AccountMultipleIcon);
-Vue.component('bullseye-arrow-icon', BullseyeArrowIcon);
-Vue.component('database-import-icon', DatabaseImportIcon);
-Vue.component('database-export-icon', DatabaseExportIcon);
-Vue.component('label-icon', LabelIcon);
-Vue.component('label-outline-icon', LabelOutlineIcon);
-Vue.component('magnify-icon', MagnifyIcon);
-
-Vue.component('content-copy-icon', ContentCopyIcon);
-Vue.component('format-list-text-icon', FormatListTextIcon);
-Vue.component('format-list-bulleted-icon', FormatListBulletedIcon);
-
-Vue.component('image-multiple-icon', ImageMultipleIcon);
-Vue.component('earth-icon', EarthIcon);
-Vue.component('delete-outline-icon', DeleteOutlineIcon);
 Vue.component('plus-icon', PlusIcon);
-Vue.component('plus-circle-icon', PlusCircleIcon);
 Vue.component('pencil-outline-icon', PencilOutlineIcon);
-Vue.component('file-table-outline-icon', FileTableOutlineIcon);
-Vue.component('animation-outline-icon', AnimationOutlineIcon);
-Vue.component('check-outline-icon', CheckOutlineIcon);
-Vue.component('check-circle-icon', CheckCircleIcon);
-Vue.component('check-circle-outline-icon', CheckCircleOutlineIcon);
-Vue.component('alert-circle-outline-icon', AlertCircleOutlineIcon);
-Vue.component('close-circle-outline-icon', CloseCircleOutlineIcon);
 Vue.component('logout-variant-icon', LogoutVariantIcon);
-Vue.component('information-outline-icon', InformationOutlineIcon);
-Vue.component('email-outline-icon', EmailOutlineIcon);
-Vue.component('dots-vertical-circle-outline-icon', DotsVerticalCircleOutlineIcon);
-Vue.component('dots-vertical-icon', DotsVerticalIcon);
-Vue.component('content-save-icon', ContentSaveIcon);
-Vue.component('filter-outline-icon', FilterOutlineIcon);
-Vue.component('chevron-left-icon', ChevronLeftIcon);
-Vue.component('chevron-right-icon', ChevronRightIcon);
-Vue.component('chevron-up-icon', ChevronUpIcon);
-Vue.component('chevron-down-icon', ChevronDownIcon);
-Vue.component('menu-down-icon', MenuDownIcon);
 Vue.component('trash-can-outline-icon', TrashCanOutlineIcon);
-Vue.component('webhook-icon', WebhookIcon);
-Vue.component('code-braces-icon', CodeBracesIcon);
 Vue.component('close-icon', CloseIcon);
-Vue.component('vector-link-icon', VectorLinkIcon);
-Vue.component('variable-icon', VariableIcon);
-
-Vue.component('send-icon', SendIcon);
-Vue.component('send-clock-icon', SendClockIcon);
-Vue.component('send-outline-icon', SendOutlineIcon);
-Vue.component('send-clock-outline-icon', SendClockOutlineIcon);
-
-Vue.component('reply-icon', ReplyIcon);
-Vue.component('reply-outline-icon', ReplyOutlineIcon);
-Vue.component('card-text-outline-icon', CardTextOutlineIcon);
-Vue.component('bell-outline-icon', BellOutlineIcon);
-Vue.component('target-icon', TargetIcon);
-Vue.component('tag-outline-icon', TagOutlineIcon);
-Vue.component('domain-icon', DomainIcon);
-Vue.component('view-dashboard-outline-icon', ViewDashboardOutlineIcon);
-Vue.component('slack-icon', SlackIcon);
-Vue.component('cellphone-icon', CellphoneIcon);
-Vue.component('file-pdf-outline-icon', FilePdfOutlineIcon);
-Vue.component('bullhorn-outline-icon', BullhornOutlineIcon);
-Vue.component('head-lightbulb-outline-icon', HeadLightbulbOutlineIcon);
-Vue.component('text-box-multiple-outline-icon', TextBoxMultipleOutlineIcon);
-Vue.component('open-in-new-icon', OpenInNewIcon);
-Vue.component('drag-icon', DragIcon);
-Vue.component('content-save-outline-icon', ContentSaveOutlineIcon);
-Vue.component('shield-key-outline-icon', ShieldKeyOutlineIcon);
-Vue.component('download-icon', DownloadIcon);
-Vue.component('chart-scatter-plot-icon', ChartScatterPlotIcon);
-Vue.component('emoticon-wink-outline-icon', EmoticonWinkOutlineIcon);
 Vue.component('clipboard-text-outline-icon', ClipboardTextOutlineIcon);

@@ -12,7 +12,7 @@
         <slot name="header" />
       </div>
       <button
-        class="flex items-center py-1 px-1 bg-slate-235 hover:bg-slate-225 outline-none focus:outline-none"
+        class="flex items-center py-1 px-1 bg-gray-200 hover:bg-gray-300 outline-none focus:outline-none"
         @click="handleClose"
       >
         <close-icon :size="23" />
@@ -42,7 +42,7 @@ export default {
     id: null,
   }),
   watch: {
-    open: function(open) {
+    open: function (open) {
       const elem = document.getElementById(`sidebar-${this.id}`);
       if (open) {
         elem.style.visibility = 'visible';

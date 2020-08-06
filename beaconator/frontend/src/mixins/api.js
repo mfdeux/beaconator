@@ -1,8 +1,12 @@
-const APIURL = 'http://127.0.0.1:8000/api';
+const makeURL = () => {
+  if (window.location.port) {
+    return `${window.location.protocol}//${window.location.hostname}:${window.location.port}/images/${this.property.code}`;
+  }
+  return `${window.location.protocol}//${window.location.hostname}/images/${this.property.code}`;
+};
+const APIURL = process.NODE_ENV === 'production' ? makeURL() : 'http://127.0.0.1:8000/api';
 const axios = require('axios');
-import router from '../router';
 import store from '../store';
-import Cookie from 'js-cookie';
 
 axios.interceptors.request.use(
   (config) => {
@@ -19,42 +23,6 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-// // axios.onRequest(request => {
-// //   request.baseURL = process.env.baseClientRestApiUrl
-// //   if (!process.server) {
-// //     if (store.state.auth) {
-// //       const token = store.state.auth
-// //       if (token) request.headers.common.Authorization = `Bearer ${token}`
-// //     }
-// //   }
-// // })
-
-// app.$axios.onRequest(request => {
-//   request.baseURL = process.env.baseClientRestApiUrl
-//   if (!process.server) {
-//     if (store.state.auth) {
-//       const token = store.state.auth
-//       if (token) request.headers.common.Authorization = `Bearer ${token}`
-//     }
-//   }
-
-// axios.onError(async (error) => {
-//   // if (!error.response) {
-//   //   errorPage({ statusCode: 404, message: 'Post not found' })
-//   //   return
-//   // }
-
-//   const code = parseInt(error.response && error.response.status);
-
-//   if (code === 401) {
-//     router.push('/login');
-//   }
-
-//   if (code === 403) {
-//     router.push('/login');
-//   }
-// });
 
 export default {
   getCodes() {

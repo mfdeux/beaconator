@@ -133,7 +133,8 @@ app = FastAPI(
 
 origins = [
     "http://localhost",
-    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://localhost:8080"
 ]
 
 app.add_middleware(
@@ -148,15 +149,24 @@ api = APIRouter()
 
 SERVE_ADMIN = True
 
-if SERVE_ADMIN:
-    app.mount(
+# if SERVE_ADMIN:
+#     app.mount(
+#         "/admin",
+#         StaticFiles(
+#             directory=ADMIN_DIST_DIR
+#         ),
+#         name="admin",
+#     )
+
+print(ADMIN_DIST_DIR)
+
+app.mount(
         "/admin",
         StaticFiles(
             directory=ADMIN_DIST_DIR
         ),
         name="admin",
     )
-
 
 @app.get("/")
 async def get_index():  # noqa: ANN201

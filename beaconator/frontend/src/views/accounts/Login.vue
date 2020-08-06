@@ -12,11 +12,6 @@ export default {
   components: {
     LoginForm,
   },
-  head() {
-    return {
-      title: 'Login',
-    };
-  },
   methods: {
     async onSubmit(form) {
       try {
@@ -26,6 +21,11 @@ export default {
         console.log(error);
       }
     },
+  },
+  head() {
+    return {
+      title: 'Login',
+    };
   },
 };
 </script>

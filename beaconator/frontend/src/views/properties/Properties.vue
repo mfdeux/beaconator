@@ -2,13 +2,16 @@
   <div>
     <div class="flex justify-end">
       <button
-        class="px-4 py-2 bg-purple-500 text-white font-semibold rounded"
+        class="flex items-center pl-3 pr-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-full transition duration-300 ease-out"
         @click="showAddModal = true"
       >
-        + Add
+        <plus-icon class="mr-1" />Add
       </button>
     </div>
-    <div v-if="properties" class="mt-4">
+    <div
+      v-if="properties"
+      class="mt-6"
+    >
       <div v-if="properties.length > 0">
         <property-card
           v-for="property in properties"
@@ -19,7 +22,10 @@
           @delete="onDelete(property.id)"
         />
       </div>
-      <div v-else class="px-4 py-4 text-center bg-gray-200 rounded-lg">
+      <div
+        v-else
+        class="px-4 py-4 text-center bg-gray-200 rounded-lg"
+      >
         <p class="text-gray-600">
           No properties were found
         </p>
@@ -62,7 +68,10 @@ export default {
     }
     try {
       const { data } = await api.getCodes();
-      const values = data.map((item) => ({ value: item.id, name: `${item.name} (${item.code})` }));
+      const values = data.map((item) => ({
+        value: item.id,
+        name: `${item.name} (${item.code})`,
+      }));
       this.$store.commit('UPDATE_CODE_OPTIONS', values);
     } catch (error) {
       console.log(error);
@@ -104,7 +113,8 @@ export default {
     },
     async onDelete(id) {
       try {
-        await api.deleteProperty(id);
+        const { data } = await api.deleteProperty(id);
+        this.properties = this.properties.filter((item) => item.id !== id);
       } catch (error) {
         console.log(error);
       }

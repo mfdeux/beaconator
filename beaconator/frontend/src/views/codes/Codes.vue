@@ -2,13 +2,16 @@
   <div>
     <div class="flex justify-end">
       <button
-        class="px-4 py-2 bg-purple-500 text-white font-semibold rounded"
+        class="flex items-center pl-3 pr-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-full transition duration-300 ease-out"
         @click="showAddModal = true"
       >
-        + Add
+        <plus-icon class="mr-1" />Add
       </button>
     </div>
-    <div v-if="codes" class="mt-4">
+    <div
+      v-if="codes"
+      class="mt-6"
+    >
       <div v-if="codes.length > 0">
         <code-card
           v-for="code in codes"
@@ -19,7 +22,10 @@
           @delete="onDelete(code.id)"
         />
       </div>
-      <div v-else class="px-4 py-4 text-center bg-gray-200 rounded-lg">
+      <div
+        v-else
+        class="px-4 py-4 text-center bg-gray-200 rounded-lg"
+      >
         <p class="text-gray-600">
           No codes were found
         </p>

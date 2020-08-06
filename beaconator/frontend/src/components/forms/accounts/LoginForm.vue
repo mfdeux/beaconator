@@ -3,8 +3,15 @@
     <form @submit.prevent="onSubmit">
       <div>
         <label>Password</label>
-        <form-input type="password" autocomplete="current-password" v-model="form.input.password" />
-        <ul v-if="$v.form.input.password.$error" class="error">
+        <form-input
+          v-model="form.input.password"
+          type="password"
+          autocomplete="current-password"
+        />
+        <ul
+          v-if="$v.form.input.password.$error"
+          class="error"
+        >
           <li v-if="!$v.form.input.password.required">
             This field is required.
           </li>

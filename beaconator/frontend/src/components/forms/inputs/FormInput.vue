@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[focus ? 'shadow-input' : null, hover ? 'shadow-input' : null]"
-    class="rounded-lg border-2 border-slate bg-transparent transition duration-300 ease-out hover:shadow-input"
+    class="rounded-lg border-2 border-gray-200 bg-transparent transition duration-300 ease-out hover:shadow-input"
     style="padding: 1px 0px;"
   >
     <div class="flex items-center justify-between pr-2">

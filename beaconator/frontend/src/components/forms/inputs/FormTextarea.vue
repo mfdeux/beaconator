@@ -3,7 +3,7 @@
     :value="value"
     :class="[
       'appearance-none block w-full px-3 py-3 mb-3 focus:outline-none bg-transparent rounded-lg border-2 bg-transparent transition duration-300 ease-out',
-      status === 'error' ? 'border-red' : 'border-slate',
+      status === 'error' ? 'border-red' : 'border-gray-200',
       tooLong ? 'long' : null,
       focus ? 'shadow-input' : null,
       hover ? 'shadow-input' : null,

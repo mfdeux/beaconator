@@ -4,7 +4,10 @@
       <div>
         <label>Name</label>
         <form-input v-model="form.input.name" />
-        <ul v-if="$v.form.input.name.$error" class="error">
+        <ul
+          v-if="$v.form.input.name.$error"
+          class="error"
+        >
           <li v-if="!$v.form.input.name.required">
             This field is required.
           </li>
@@ -14,13 +17,18 @@
       <div class="mt-4">
         <label>Code</label>
         <form-input v-model="form.input.code" />
-        <ul v-if="$v.form.input.code.$error" class="error">
+        <ul
+          v-if="$v.form.input.code.$error"
+          class="error"
+        >
           <li v-if="!$v.form.input.code.required">
             This field is required.
           </li>
         </ul>
       </div>
-      <div class="mt-6"><label>Active</label><form-switch v-model="form.input.active" /></div>
+      <div class="mt-6">
+        <label>Active</label><form-switch v-model="form.input.active" />
+      </div>
 
       <div class="mt-6">
         <button type="submit">
